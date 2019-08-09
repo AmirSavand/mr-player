@@ -161,4 +161,20 @@ export class ApiService {
   deleteCategory(id: number): Observable<void> {
     return this.http.delete<void>(`${ApiService.base}party-categories/${id}`).pipe();
   }
+
+  /**
+   * @todo
+   */
+  searchYouTube() {
+    return this.http.get('https://www.googleapis.com/youtube/v3/search', {
+      params: {
+        part: 'id,snipped',
+        maxResults: '12',
+        q: 'muse',
+        type: 'video',
+        videoCategory: '10',
+        key: 'AIzaSyBvPUNQMo3udOQ3EgSUF9_RMM1xA60-03I'
+      },
+    });
+  }
 }
