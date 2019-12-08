@@ -1,0 +1,46 @@
+$primary: #ff1493;
+$dark: #222228;
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$body-bg: lighten($dark, 5);
+$body-color: $light;
+
+$progress-bg: lighten($dark, 20);
+$progress-height: 5px;
+
+$link-decoration: none;
+$link-hover-decoration: none;
+
+$navbar-padding-y: 5px;
+
+$card-bg: $dark;
+$card-color: $light;
+$card-border-width: 0;
+
+.card {
+  .card-header {
+    background: rgba(0, 0, 0, 0.25);
+  }
+}
+
+$table-color: darken($light, 20);
+$table-hover-color: $light;
+$table-border-width: 0;
+$table-cell-padding: 20px;
+
+$input-bg: lighten($dark, 15);
+$input-color: $light;
+$input-border-width: 0;
+$input-focus-bg: $input-bg;
+$input-focus-color: $white;
+$input-placeholder-color: darken($input-color, 30);
+
+$list-group-bg: none;
+
+$popover-body-padding-x: 0;
+
+$modal-content-color: $dark;
+
+$progress-border-radius: 0;

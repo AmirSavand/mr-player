@@ -1,0 +1,39 @@
+@import "variables";
+@import "~bootstrap/scss/bootstrap";
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar {
+  background: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary;
+}
+
+body {
+  cursor: default;
+}
+
+body,
+html {
+  height: 100%;
+}
+
+button {
+  outline: none !important;
+}
+
+a {
+  cursor: pointer;
+}
+
+.text-pre {
+  white-space: pre-line;
+  word-break: break-word;
+}
