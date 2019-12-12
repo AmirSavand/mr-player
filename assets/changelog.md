@@ -1,6 +1,11 @@
 ### v4.4
 
+- Improve code to use lazy-loading technology
+- Add proper title to all pages
 - Fix space doesn't work when typing in inputs
+- Fix party updating form
+- Fix parties without default background image in dashboard
+
 
 ### v4.3
 
