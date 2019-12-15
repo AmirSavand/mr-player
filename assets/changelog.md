@@ -5,6 +5,7 @@
 - Fix space doesn't work when typing in inputs
 - Fix party updating form
 - Fix parties without default background image in dashboard
+- Fix player is under the whole page
 
 
 ### v4.3
