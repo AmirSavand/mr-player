@@ -16,6 +16,10 @@
   background: $primary;
 }
 
+.h-100 {
+  min-height: 0;
+}
+
 body {
   cursor: default;
 }
