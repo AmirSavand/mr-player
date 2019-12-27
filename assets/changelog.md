@@ -1,6 +1,7 @@
 ### v4.4
 
 - Add proper title to all pages
+- Add new year message and a cool offer
 - Improve code to use lazy-loading technology
 - Improve song and playlist modals design
 - Improve performance and update libraries
