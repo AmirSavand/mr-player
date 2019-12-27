@@ -9,6 +9,7 @@
 - Fix party updating form
 - Fix parties without default background image in dashboard
 - Fix player is under the whole page
+- Fix resuming paused song will start it from the beginning
 
 
 ### v4.3
