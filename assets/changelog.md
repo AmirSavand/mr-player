@@ -1,11 +1,18 @@
 #### v4.5
 
+2020 January 11
+
 - [Add auto refreshing feature for party](https://github.com/AmirSavand/playzem/issues/166)
 - Add change password
 - Add becoming a fan of other users
 - Add likes for parties
 - Add likes songs
 - Add stars playlists
+
+
+- Improve dashboard connect buttons
+- Improve songs design in party page
+- Improve user profile page design
 
 
 - Fix settings page (unable to update)
