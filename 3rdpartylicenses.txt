@@ -200,6 +200,8 @@ ngx-bootstrap/collapse
 
 ngx-bootstrap/component-loader
 
+ngx-bootstrap/dropdown
+
 ngx-bootstrap/modal
 
 ngx-bootstrap/popover
