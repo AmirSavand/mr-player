@@ -1,6 +1,9 @@
 #### v4.6
 
 - [Add DJ feature (users listen to another users's player)](https://github.com/AmirSavand/playzem/issues/168)
+- Add forgot password
+
+
 - Remove new year messages
 
 
