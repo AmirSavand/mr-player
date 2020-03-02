@@ -4,6 +4,13 @@
 - Add forgot password
 
 
+- Improve and update app core
+- Improve dashboard card sizes
+
+
+- Fix managing party playlists
+
+
 - Remove new year messages
 
 
