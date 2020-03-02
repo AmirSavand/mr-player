@@ -9,7 +9,7 @@
 
 
 - Fix managing party playlists
-
+- Fix deleting something doesn't work sometimes
 
 - Remove new year messages
 
