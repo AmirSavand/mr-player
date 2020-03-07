@@ -1,6 +1,7 @@
 #### v4.6
 
-- [Add DJ feature (users listen to another users's player)](https://github.com/AmirSavand/playzem/issues/168)
+- [Add DJ feature (users listen to another users's player)](https://github.com/AmirSavand/playsem/issues/168)
+- Add new domain: [playsem.com](https://wwww.playsem.com)
 - Add forgot password
 
 
@@ -11,6 +12,8 @@
 - Fix managing party playlists
 - Fix deleting something doesn't work sometimes
 
+
+- Rename project to PlaysEM
 - Remove new year messages
 
 
@@ -18,7 +21,7 @@
 
 2020 January 11
 
-- [Add auto refreshing feature for party](https://github.com/AmirSavand/playzem/issues/166)
+- [Add auto refreshing feature for party](https://github.com/AmirSavand/playsem/issues/166)
 - Add change password
 - Add becoming a fan of other users
 - Add likes for parties
