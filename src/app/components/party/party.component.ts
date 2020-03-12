@@ -22,6 +22,7 @@ import { PartyService } from '@app/services/party.service';
 import { PlayerService } from '@app/services/player.service';
 import { PusherService } from '@app/services/pusher.service';
 import { SongService } from '@app/services/song.service';
+import { PlayerComponent } from '@app/shared/player/player.component';
 import { SongModalComponent } from '@app/shared/song-modal/song-modal.component';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +37,6 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import Channel from 'pusher-js';
-import { PlayerComponent } from '@app/shared/player/player.component';
 
 @Component({
   selector: 'app-party',
@@ -465,6 +465,10 @@ export class PartyComponent implements OnInit, OnDestroy {
     this.channel.bind('dj-create', (data: Dj): void => {
       // Add the DJ to the list of DJs
       this.djs.push(data);
+      // If DJ is user, update the player service
+      if (this.dj && this.dj.id === data.id) {
+        PlayerService.updateDj(data);
+      }
     });
     this.channel.bind('dj-update', (data: Dj): void => {
       // Find and update local version of DJ
@@ -473,8 +477,16 @@ export class PartyComponent implements OnInit, OnDestroy {
       if (this.djUser && this.djUser.dj === data.id) {
         PlayerService.updateDjConnected(data, this.songs.find(song => song.id === data.song));
       }
+      // If DJ is user, update the player service
+      if (this.dj && this.dj.id === data.id) {
+        PlayerService.updateDj(data);
+      }
     });
     this.channel.bind('dj-delete', (data: Dj): void => {
+      // If DJ is user, update the player service
+      if (this.dj && this.dj.id === data.id) {
+        PlayerService.updateDj(null);
+      }
       // Find and delete the local version of DJ
       this.djs.splice(this.djs.findIndex(dj => dj.id === data.id), 1);
       // Check if this DJ is the DJ user is listening to
@@ -520,6 +532,8 @@ export class PartyComponent implements OnInit, OnDestroy {
       const djUserDj: Dj = this.getDj(this.djUser.dj);
       PlayerService.updateDjConnected(djUserDj, this.songs.find(song => song.id === djUserDj.song));
     }
+    // Update DJ for player service
+    PlayerService.updateDj(this.dj);
   }
 
   /**

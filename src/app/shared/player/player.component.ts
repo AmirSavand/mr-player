@@ -1,7 +1,9 @@
+import { DatePipe } from '@angular/common';
 import { Component, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { PlayerRepeat } from '@app/enums/player-repeat';
 import { Dj } from '@app/interfaces/dj';
 import { Song } from '@app/interfaces/song';
+import { ApiService } from '@app/services/api.service';
 import { PlayerService } from '@app/services/player.service';
 import { SongService } from '@app/services/song.service';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
@@ -20,6 +22,7 @@ import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
+  providers: [DatePipe],
 })
 export class PlayerComponent {
 
@@ -77,6 +80,11 @@ export class PlayerComponent {
   playing: Song;
 
   /**
+   * DJ that user is
+   */
+  dj: Dj;
+
+  /**
    * DJ subscribed to
    */
   djConnected: Dj;
@@ -102,7 +110,9 @@ export class PlayerComponent {
   getSongImage = SongService.getSongImage;
 
   constructor(private elementRef: ElementRef,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private api: ApiService,
+              private date: DatePipe) {
     /**
      * Add keydown listener to SPACE and pause/resume playing song
      */
@@ -136,11 +146,6 @@ export class PlayerComponent {
   }
 
   /**
-   * @see PlayerService.play
-   */
-  play = PlayerService.play;
-
-  /**
    * @returns Party cover image if has one otherwise default image
    */
   get playingPartyCover(): string {
@@ -171,14 +176,30 @@ export class PlayerComponent {
   }
 
   /**
+   * @see PlayerService.play
+   */
+  play(song: Song): void {
+    PlayerService.play(song);
+    if (this.dj) {
+      this.api.dj.update(this.dj.id, {
+        song: this.playing.id,
+      }).subscribe();
+    }
+  }
+
+  /**
    * Seek to a time from the timeline
    *
    * @param event Mouse event
    */
   seek(event: MouseEvent): void {
-    this.youtube.videoPlayer.seekTo(
-      this.youtube.videoPlayer.getDuration() * (event.offsetX / window.innerWidth), true,
-    );
+    const seekTo: number = this.youtube.videoPlayer.getDuration() * (event.offsetX / window.innerWidth);
+    this.youtube.videoPlayer.seekTo(seekTo, true);
+    if (this.dj) {
+      this.api.dj.update(this.dj.id, {
+        time: this.date.transform(new Date(0, 0, 0, 0, 0, seekTo), 'HH:mm:ss'),
+      }).subscribe();
+    }
     this.updateTimeline();
   }
 
@@ -187,6 +208,11 @@ export class PlayerComponent {
    */
   previous(): void {
     PlayerService.playPrevious();
+    if (this.dj) {
+      this.api.dj.update(this.dj.id, {
+        song: this.playing.id,
+      }).subscribe();
+    }
   }
 
   /**
@@ -208,6 +234,11 @@ export class PlayerComponent {
    */
   next(): void {
     PlayerService.playNext();
+    if (this.dj) {
+      this.api.dj.update(this.dj.id, {
+        song: this.playing.id,
+      }).subscribe();
+    }
   }
 
   /**
@@ -275,25 +306,38 @@ export class PlayerComponent {
     PlayerService.playing.subscribe((playing: Song): void => {
       // If there's a song playing
       if (playing) {
-        this.playing = playing;
         // If there's a DJ and a time, load the video with that starting time in seconds
         let start = 0;
         if (this.djConnected && this.djConnected.time) {
           start = Number(this.djConnected.time.split(':').reduce((acc: any, time: string): any => (60 * acc) + +time));
         }
         if (this.youtube) {
-          this.youtube.videoPlayer.loadVideoById({
-            videoId: PlayerService.getYouTubeVideoID(this.playing.source),
-            startSeconds: start,
-          });
+          if (this.playing && this.playing.id === playing.id) {
+            this.youtube.videoPlayer.seekTo(start, true);
+            this.youtube.videoPlayer.playVideo();
+          } else {
+            this.youtube.videoPlayer.loadVideoById({
+              videoId: PlayerService.getYouTubeVideoID(playing.source),
+              startSeconds: start,
+            });
+          }
         }
+        this.playing = playing;
       } else {
         this.youtube.videoPlayer.seekTo(0, true);
         this.youtube.videoPlayer.pauseVideo();
       }
     });
     /**
+     * Get DJ (that user is) and subscribe
+     * Need this to make API calls for updating the DJ
+     */
+    PlayerService.dj.subscribe((dj: Dj): void => {
+      this.dj = dj;
+    });
+    /**
      * Get connected dj and subscribe
+     * Need this to update the player on DJ changes
      */
     PlayerService.djConnected.subscribe((dj: Dj): void => {
       this.djConnected = dj;

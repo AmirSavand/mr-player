@@ -12,10 +12,12 @@ export class PlayerService {
 
   private static songsSubject: BehaviorSubject<Song[]> = new BehaviorSubject<Song[]>([]);
   private static playingSubject: BehaviorSubject<Song> = new BehaviorSubject<Song>(null);
+  private static djSubject: BehaviorSubject<Dj> = new BehaviorSubject<Dj>(null);
   private static djConnectedSubject: BehaviorSubject<Dj> = new BehaviorSubject<Dj>(null);
 
   static songs: Observable<Song[]> = PlayerService.songsSubject.asObservable();
   static playing: Observable<Song> = PlayerService.playingSubject.asObservable();
+  static dj: Observable<Dj> = PlayerService.djSubject.asObservable();
   static djConnected: Observable<Dj> = PlayerService.djConnectedSubject.asObservable();
 
   static repeat: PlayerRepeat = PlayerRepeat.DISABLE;
@@ -163,6 +165,26 @@ export class PlayerService {
    */
   static isFirstSong(song: Song): boolean {
     return this.songsSubject.value.indexOf(song) === 0;
+  }
+
+  /**
+   * Update DJ (that user is)
+   *
+   * @param dj DJ data
+   */
+  static updateDj(dj: Dj | Partial<Dj>): void {
+    if (!dj) {
+      this.djSubject.next(null);
+      console.log('dj removed');
+    } else {
+      if (this.djSubject.value) {
+        this.djSubject.next(Object.assign(this.djSubject.value, dj));
+        console.log('dj updated', this.djSubject.value);
+      } else {
+        this.djSubject.next(dj as Dj);
+        console.log('dj set', this.djSubject.value);
+      }
+    }
   }
 
   /**
