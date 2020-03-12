@@ -471,7 +471,7 @@ export class PartyComponent implements OnInit, OnDestroy {
       this.djs[this.djs.findIndex(dj => dj.id === data.id)] = data;
       // Check if this DJ is the DJ user is listening to
       if (this.djUser && this.djUser.dj === data.id) {
-        PlayerService.updateDj(data, this.songs.find(song => song.id === data.song));
+        PlayerService.updateDjConnected(data, this.songs.find(song => song.id === data.song));
       }
     });
     this.channel.bind('dj-delete', (data: Dj): void => {
@@ -480,7 +480,7 @@ export class PartyComponent implements OnInit, OnDestroy {
       // Check if this DJ is the DJ user is listening to
       if (this.dj && this.dj.id === data.id) {
         // Stop listening (disconnect from DJ)
-        PlayerService.stopDj();
+        PlayerService.stopDjConnected();
       }
     });
     /**
@@ -504,7 +504,7 @@ export class PartyComponent implements OnInit, OnDestroy {
       // Check if this DJ user is from authenticated user
       if (this.user && this.djUser && this.djUser.user === this.user.id) {
         // Stop listening (disconnect from DJ)
-        PlayerService.stopDj();
+        PlayerService.stopDjConnected();
       }
     });
   }
@@ -518,7 +518,7 @@ export class PartyComponent implements OnInit, OnDestroy {
   setupDj(): void {
     if (this.djs && this.djs.length && this.djUser) {
       const djUserDj: Dj = this.getDj(this.djUser.dj);
-      PlayerService.updateDj(djUserDj, this.songs.find(song => song.id === djUserDj.song));
+      PlayerService.updateDjConnected(djUserDj, this.songs.find(song => song.id === djUserDj.song));
     }
   }
 

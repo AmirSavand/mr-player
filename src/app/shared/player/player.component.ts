@@ -79,7 +79,7 @@ export class PlayerComponent {
   /**
    * DJ subscribed to
    */
-  dj: Dj;
+  djConnected: Dj;
 
   /**
    * Song currently playing timeline
@@ -277,14 +277,14 @@ export class PlayerComponent {
       if (playing) {
         this.playing = playing;
         // If there's a DJ and a time, load the video with that starting time in seconds
-        let startSeconds = 0;
-        if (this.dj && this.dj.time) {
-          startSeconds = Number(this.dj.time.split(':').reduce((acc: any, time: string): any => (60 * acc) + +time));
+        let start = 0;
+        if (this.djConnected && this.djConnected.time) {
+          start = Number(this.djConnected.time.split(':').reduce((acc: any, time: string): any => (60 * acc) + +time));
         }
         if (this.youtube) {
           this.youtube.videoPlayer.loadVideoById({
             videoId: PlayerService.getYouTubeVideoID(this.playing.source),
-            startSeconds,
+            startSeconds: start,
           });
         }
       } else {
@@ -295,8 +295,8 @@ export class PlayerComponent {
     /**
      * Get connected dj and subscribe
      */
-    PlayerService.dj.subscribe((dj: Dj): void => {
-      this.dj = dj;
+    PlayerService.djConnected.subscribe((dj: Dj): void => {
+      this.djConnected = dj;
     });
     /**
      * Update timeline

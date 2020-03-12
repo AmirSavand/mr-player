@@ -12,11 +12,11 @@ export class PlayerService {
 
   private static songsSubject: BehaviorSubject<Song[]> = new BehaviorSubject<Song[]>([]);
   private static playingSubject: BehaviorSubject<Song> = new BehaviorSubject<Song>(null);
-  private static djSubject: BehaviorSubject<Dj> = new BehaviorSubject<Dj>(null);
+  private static djConnectedSubject: BehaviorSubject<Dj> = new BehaviorSubject<Dj>(null);
 
   static songs: Observable<Song[]> = PlayerService.songsSubject.asObservable();
   static playing: Observable<Song> = PlayerService.playingSubject.asObservable();
-  static dj: Observable<Dj> = PlayerService.djSubject.asObservable();
+  static djConnected: Observable<Dj> = PlayerService.djConnectedSubject.asObservable();
 
   static repeat: PlayerRepeat = PlayerRepeat.DISABLE;
   static shuffle = false;
@@ -171,15 +171,15 @@ export class PlayerService {
    * @param dj DJ data
    * @param song Song that DJ is playing
    */
-  static updateDj(dj: Dj, song?: Song): void {
+  static updateDjConnected(dj: Dj, song?: Song): void {
     // Check if same DJ is updating or it's a new one that user is connecting to
-    const currentDj: Dj = PlayerService.djSubject.value;
+    const currentDj: Dj = PlayerService.djConnectedSubject.value;
     // Check if same song is updating or it's a new one
     if (currentDj && currentDj.id === dj.id) {
       // Clear songs (stop)
       PlayerService.stop();
       // Update the DJ
-      PlayerService.djSubject.next(dj);
+      PlayerService.djConnectedSubject.next(dj);
       // Set the song (if it's not already playing)
       if (song) {
         PlayerService.play(song);
@@ -188,14 +188,14 @@ export class PlayerService {
       // Clear songs (stop)
       PlayerService.stop();
       // Set the DJ
-      PlayerService.djSubject.next(dj);
+      PlayerService.djConnectedSubject.next(dj);
     }
   }
 
   /**
    * Clear the DJ user is connected to
    */
-  static stopDj(): void {
-    PlayerService.djSubject.next(null);
+  static stopDjConnected(): void {
+    PlayerService.djConnectedSubject.next(null);
   }
 }
