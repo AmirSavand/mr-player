@@ -11,6 +11,7 @@
 
 - Fix managing party playlists
 - Fix deleting something doesn't work sometimes
+- Fix party access when user is not signed in
 
 
 - Rename project to PlaysEM
