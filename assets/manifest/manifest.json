@@ -1,8 +1,8 @@
 {
   "name": "PlaysEM",
   "short_name": "PlaysEM",
-  "theme_color": "#ff1493",
-  "background_color": "#222228",
+  "theme_color": "#222228",
+  "background_color": "#ff1493",
   "display": "fullscreen",
   "Scope": "/",
   "start_url": "/",
