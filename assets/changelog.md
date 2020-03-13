@@ -1,5 +1,7 @@
 #### v4.6
 
+2020 March 13
+
 - [Add DJ feature (users listen to another users's player)](https://github.com/AmirSavand/playsem/issues/168)
 - Add new domain: [playsem.com](https://wwww.playsem.com)
 - Add forgot password
