@@ -3,6 +3,7 @@
 - [Add DJ feature (users listen to another users's player)](https://github.com/AmirSavand/playsem/issues/168)
 - Add new domain: [playsem.com](https://wwww.playsem.com)
 - Add forgot password
+- Add new logo (v3)
 
 
 - Improve and update app core
