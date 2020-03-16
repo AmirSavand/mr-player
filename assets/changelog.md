@@ -1,3 +1,7 @@
+#### v4.7
+
+- Add landing page for PlaysEM
+
 #### v4.6
 
 2020 March 13
