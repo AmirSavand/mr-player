@@ -2,6 +2,9 @@
 
 - Add landing page for PlaysEM
 
+
+- Improve sidebar with animation
+
 #### v4.6
 
 2020 March 13
