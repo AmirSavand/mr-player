@@ -1,179 +1,186 @@
-<!-- Party -->
-<div class="party" [style.background-image]="partyCover" *ngIf="party">
+<div class="d-flex flex-column h-100 position-relative">
+  <div class="d-flex flex-column h-100 overflow-auto" #scroller (scroll)="onScroll($event)">
+    <!-- Party -->
+    <div class="party" #partyWrapper [style.background-image]="partyCover" *ngIf="party">
 
-  <!-- Content -->
-  <div class="container">
+      <!-- Content -->
+      <div class="container">
 
-    <!-- Image -->
-    <div class="cover d-none d-md-block"
-         *ngIf="party.image"
-         [style.background-image]="'url(' + party.image + ')'">
-    </div>
+        <!-- Image -->
+        <div class="cover d-none d-md-block"
+             *ngIf="party.image"
+             [style.background-image]="'url(' + party.image + ')'">
+        </div>
 
-    <!-- Right side -->
-    <div>
+        <!-- Right side -->
+        <div>
 
-      <!-- Name -->
-      <h1 class="font-weight-bold">{{ party.name }}</h1>
+          <!-- Name -->
+          <h1 class="font-weight-bold">{{ party.name }}</h1>
 
-      <!-- Description -->
-      <p class="text-pre">{{ party.description }}</p>
+          <!-- Description -->
+          <p class="text-pre">{{ party.description }}</p>
 
-      <!-- Info -->
-      <p class="mb-2">
-        <!-- Creator -->
-        <a class="text-light" [routerLink]="['/user', party.user.username]">{{ party.user.account.name }}</a>
-        <!-- Songs count -->
-        <span *ngIf="partySongCount"> &bull; {{ partySongCount }} Songs</span>
-        <!-- Members count -->
-        <span *ngIf="partyUserCount"> &bull; {{ partyUserCount }} Members</span>
-        <!-- DJs count -->
-        <span *ngIf="djs"> &bull; {{ djs.length }} DJs</span>
-        <!-- Date -->
-        &bull; {{ party.date | date }}
-      </p>
+          <!-- Info -->
+          <p class="mb-2">
+            <!-- Creator -->
+            <a class="text-light" [routerLink]="['/user', party.user.username]">{{ party.user.account.name }}</a>
+            <!-- Songs count -->
+            <span *ngIf="partySongCount"> &bull; {{ partySongCount }} Songs</span>
+            <!-- Members count -->
+            <span *ngIf="partyUserCount"> &bull; {{ partyUserCount }} Members</span>
+            <!-- DJs count -->
+            <span *ngIf="djs"> &bull; {{ djs.length }} DJs</span>
+            <!-- Date -->
+            &bull; {{ party.date | date }}
+          </p>
 
-      <!-- Play -->
-      <button class="btn btn-light btn-sm mr-2 mt-2" (click)="play()">
-        <fa-icon [fixedWidth]="true" [icon]="faPlay"></fa-icon>
-        Play
-      </button>
-
-      <!-- DJ -->
-      <button class="btn btn-sm mr-2 mt-2" (click)="toggleDj()"
-              [class.btn-warning]="isPartyDj()" [class.btn-light]="!isPartyDj()">
-        <fa-icon [fixedWidth]="true" [icon]="faDj"></fa-icon>
-        {{ !isPartyDj() ? 'Start DJ' : 'Stop DJ' }}
-      </button>
-
-      <!-- DJs -->
-      <div class="btn-group" dropdown *ngIf="djs && djs.length && !(djs.length === 1 && isPartyDj())">
-        <button class="btn btn-light btn-sm mr-2 mt-2 dropdown-toggle" dropdownToggle>
-          Connect to DJ <span class="caret"></span>
-        </button>
-        <div class="dropdown-menu" *dropdownMenu>
-          <button class="dropdown-item" *ngIf="djUser" (click)="toggleConnectDj(getDj(djUser.dj))">
-            Disconnect from <b>{{ getPartyUser(getDj(djUser.dj).user).user.username }}</b>
+          <!-- Play -->
+          <button class="btn btn-light btn-sm mr-2 mt-2" (click)="play()">
+            <fa-icon [fixedWidth]="true" [icon]="faPlay"></fa-icon>
+            Play
           </button>
-          <div class="dropdown-divider" *ngIf="djUser"></div>
-          <h6 class="dropdown-header">Current party DJs</h6>
-          <button class="dropdown-item" *ngFor="let dj of djs" (click)="toggleConnectDj(dj)"
-                  [class.active]="djUser && djUser.dj === dj.id">
-            {{ getPartyUser(dj.user).user.account.name }}
+
+          <!-- DJ -->
+          <button class="btn btn-sm mr-2 mt-2" (click)="toggleDj()"
+                  [class.btn-warning]="isPartyDj()" [class.btn-light]="!isPartyDj()">
+            <fa-icon [fixedWidth]="true" [icon]="faDj"></fa-icon>
+            {{ !isPartyDj() ? 'Start DJ' : 'Stop DJ' }}
           </button>
+
+          <!-- DJs -->
+          <div class="btn-group" dropdown *ngIf="djs && djs.length && !(djs.length === 1 && isPartyDj())">
+            <button class="btn btn-light btn-sm mr-2 mt-2 dropdown-toggle" dropdownToggle>
+              Connect to DJ <span class="caret"></span>
+            </button>
+            <div class="dropdown-menu" *dropdownMenu>
+              <button class="dropdown-item" *ngIf="djUser" (click)="toggleConnectDj(getDj(djUser.dj))">
+                Disconnect from <b>{{ getPartyUser(getDj(djUser.dj).user).user.username }}</b>
+              </button>
+              <div class="dropdown-divider" *ngIf="djUser"></div>
+              <h6 class="dropdown-header">Current party DJs</h6>
+              <button class="dropdown-item" *ngFor="let dj of djs" (click)="toggleConnectDj(dj)"
+                      [class.active]="djUser && djUser.dj === dj.id">
+                {{ getPartyUser(dj.user).user.account.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Like -->
+          <button class="btn btn-light btn-sm mr-2 mt-2" (click)="toggleLikeParty()" title="Like">
+            <fa-icon [fixedWidth]="true" [icon]="faLike" [class.text-danger]="party.like"></fa-icon>
+            <span *ngIf="party.likes">{{ party.likes | number }}</span>
+          </button>
+
+          <!-- Party ID -->
+          <button class="btn btn-light btn-sm mr-2 mt-2" [popover]="party.id"
+                  containerClass="px-3 mw-100 font-weight-bold text-monospace" triggers="click">
+            <fa-icon [fixedWidth]="true" [icon]="faKey"></fa-icon>
+            Key
+          </button>
+
+          <!-- Join Party -->
+          <button class="btn btn-light btn-sm mr-2 mt-2" *ngIf="isPartyMember() === false" (click)="joinParty()">
+            <fa-icon [fixedWidth]="true" [icon]="faJoin"></fa-icon>
+            Join Party
+          </button>
+
+          <!-- Leave Party -->
+          <button class="btn btn-light btn-sm mr-2 mt-2" *ngIf="isPartyMember() === true" (click)="leaveParty()">
+            <fa-icon [fixedWidth]="true" [icon]="faLeave"></fa-icon>
+            Leave Party
+          </button>
+
+          <!-- Settings -->
+          <a class="btn btn-light btn-sm mr-2 mt-2" routerLink="settings" *ngIf="auth.isUser(party.user)">
+            <fa-icon [fixedWidth]="true" [icon]="faSettings"></fa-icon>
+            Settings
+          </a>
         </div>
       </div>
-
-      <!-- Like -->
-      <button class="btn btn-light btn-sm mr-2 mt-2" (click)="toggleLikeParty()" title="Like">
-        <fa-icon [fixedWidth]="true" [icon]="faLike" [class.text-danger]="party.like"></fa-icon>
-        <span *ngIf="party.likes">{{ party.likes | number }}</span>
-      </button>
-
-      <!-- Party ID -->
-      <button class="btn btn-light btn-sm mr-2 mt-2" [popover]="party.id"
-              containerClass="px-3 mw-100 font-weight-bold text-monospace" triggers="click">
-        <fa-icon [fixedWidth]="true" [icon]="faKey"></fa-icon>
-        Key
-      </button>
-
-      <!-- Join Party -->
-      <button class="btn btn-light btn-sm mr-2 mt-2" *ngIf="isPartyMember() === false" (click)="joinParty()">
-        <fa-icon [fixedWidth]="true" [icon]="faJoin"></fa-icon>
-        Join Party
-      </button>
-
-      <!-- Leave Party -->
-      <button class="btn btn-light btn-sm mr-2 mt-2" *ngIf="isPartyMember() === true" (click)="leaveParty()">
-        <fa-icon [fixedWidth]="true" [icon]="faLeave"></fa-icon>
-        Leave Party
-      </button>
-
-      <!-- Settings -->
-      <a class="btn btn-light btn-sm mr-2 mt-2" routerLink="settings" *ngIf="auth.isUser(party.user)">
-        <fa-icon [fixedWidth]="true" [icon]="faSettings"></fa-icon>
-        Settings
-      </a>
     </div>
-  </div>
-</div>
 
-<!-- Categories -->
-<div class="category-wrapper py-3" *ngIf="party && party.categories.length">
-  <div class="category-list pl-4">
-    <!-- Category -->
-    <div class="category mr-3" *ngFor="let category of party.categories">
-      <!-- Category like -->
-      <div class="like">
-        <button class="btn btn-sm btn-dark m-2" (click)="toggleLikeCategory(category)">
-          <fa-icon [fixedWidth]="true" [icon]="faLikeCategory" [class.text-warning]="category.like"></fa-icon>
-          <span class="ml-1" *ngIf="category.likes">{{ category.likes | number }}</span>
-        </button>
+    <!-- Categories -->
+    <div class="category-wrapper flex-shrink-0 py-3" *ngIf="party && party.categories.length">
+      <div class="category-list pl-4">
+        <!-- Category -->
+        <div class="category mr-3" *ngFor="let category of party.categories">
+          <!-- Category like -->
+          <button class="btn btn-sm btn-dark like" (click)="toggleLikeCategory(category)">
+            <fa-icon [fixedWidth]="true" [icon]="faLikeCategory" [class.text-warning]="category.like"></fa-icon>
+            <span class="ml-1" *ngIf="category.likes">{{ category.likes | number }}</span>
+          </button>
+          <!-- Category card -->
+          <a class="card m-0" (click)="deselectCategory(category)"
+             routerLink="./" routerLinkActive="bg-primary" [queryParams]="{playlist: category.id}">
+            <div class="card-body card-body-image"
+                 [style.background-image]="'url(' + (category.image || 'assets/category.jpg') + ')'">
+            </div>
+            <div class="card-body">
+              <div>{{ category.name }}</div>
+              <small class="text-white-50">{{ getCategorySongCount(category) }} Songs</small>
+            </div>
+          </a>
+        </div>
       </div>
-      <!-- Category card -->
-      <a class="card m-0" (click)="deselectCategory(category)"
-         routerLink="./" routerLinkActive="bg-primary" [queryParams]="{playlist: category.id}">
-        <div class="card-body card-body-image"
-             [style.background-image]="'url(' + (category.image || 'assets/category.jpg') + ')'">
+    </div>
+
+    <!-- Add song -->
+    <form class="input-group" [formGroup]="songForm" (ngSubmit)="addSong()">
+      <input class="form-control p-4 rounded-0" type="text" formControlName="source"
+             [placeholder]="getAddSongPlaceholder()">
+    </form>
+
+    <!-- Songs -->
+    <div class="songs" *ngIf="songs">
+      <!-- Song -->
+      <div class="song d-flex align-items-center pl-4" *ngFor="let song of songsFilter"
+           [class.active]="isPlaying(song)">
+        <!-- Song image -->
+        <div class="cover mr-3 rounded action" (click)="play(song)"
+             [style.background-image]="'url(' + getSongImage(song) + ')'"></div>
+        <!-- Song title and info -->
+        <div class="info d-flex flex-column text-truncate">
+          <!-- Song title -->
+          <span class="text-truncate action" (click)="play(song)">{{ song.name }}</span>
+          <!-- Song info -->
+          <small>
+            <!-- Song user -->
+            <a class="text-light" [routerLink]="['/user', song.user.username]">{{ song.user.account.name }}</a>
+            <!-- Song categories -->
+            <a class="text-light ml-2" *ngFor="let songCategory of song.categories"
+               routerLink="./" [queryParams]="{playlist: songCategory.category.id}">
+              <fa-icon class="text-secondary" [fixedWidth]="true" [icon]="faCategory"></fa-icon>
+              {{ songCategory.category.name }}
+            </a>
+          </small>
         </div>
-        <div class="card-body">
-          <div>{{ category.name }}</div>
-          <small class="text-white-50">{{ getCategorySongCount(category) }} Songs</small>
+        <!-- Like -->
+        <div class="icon action" (click)="toggleLikeSong(song)"
+             [class.highlight]="song.like" [class.show-on-hover]="!song.likes">
+          <fa-icon [fixedWidth]="true" [icon]="faLike" [class.text-danger]="song.like"></fa-icon>
+          <span class="ml-1" *ngIf="song.likes">{{ song.likes | number }}</span>
         </div>
-      </a>
+        <!-- Options -->
+        <div class="icon action"
+             [popover]="songOptions"
+             [outsideClick]="true"
+             [popoverContext]="{ song: song }"
+             [isOpen]="song.popover"
+             (onShown)="song.popover = true"
+             (onHidden)="song.popover = false"
+             placement="left">
+          <fa-icon [fixedWidth]="true" [icon]="faOptions"></fa-icon>
+        </div>
+      </div>
     </div>
   </div>
+  <!-- Scroll to top -->
+  <button class="btn btn-dark btn-lg rounded-circle shadow scroll-to-top" @scaleInOut *ngIf="showScrollTop"
+          (click)="scrollToTop()">
+    <fa-icon [icon]="faArrowUp"></fa-icon>
+  </button>
 </div>
-
-<!-- Add song -->
-<form class="input-group" [formGroup]="songForm" (ngSubmit)="addSong()">
-  <input class="form-control p-4 rounded-0" type="text" formControlName="source"
-         [placeholder]="getAddSongPlaceholder()">
-</form>
-
-<!-- Songs -->
-<div class="songs" *ngIf="songs">
-  <!-- Song -->
-  <div class="song d-flex align-items-center pl-4" *ngFor="let song of songsFilter" [class.active]="isPlaying(song)">
-    <!-- Song image -->
-    <div class="cover mr-3 rounded action" (click)="play(song)"
-         [style.background-image]="'url(' + getSongImage(song) + ')'"></div>
-    <!-- Song title and info -->
-    <div class="info d-flex flex-column text-truncate">
-      <!-- Song title -->
-      <span class="text-truncate action" (click)="play(song)">{{ song.name }}</span>
-      <!-- Song info -->
-      <small>
-        <!-- Song user -->
-        <a class="text-light" [routerLink]="['/user', song.user.username]">{{ song.user.account.name }}</a>
-        <!-- Song categories -->
-        <a class="text-light ml-2" *ngFor="let songCategory of song.categories"
-           routerLink="./" [queryParams]="{playlist: songCategory.category.id}">
-          <fa-icon class="text-secondary" [fixedWidth]="true" [icon]="faCategory"></fa-icon>
-          {{ songCategory.category.name }}
-        </a>
-      </small>
-    </div>
-    <!-- Like -->
-    <div class="icon action" (click)="toggleLikeSong(song)"
-         [class.highlight]="song.like" [class.show-on-hover]="!song.likes">
-      <fa-icon [fixedWidth]="true" [icon]="faLike" [class.text-danger]="song.like"></fa-icon>
-      <span class="ml-1" *ngIf="song.likes">{{ song.likes | number }}</span>
-    </div>
-    <!-- Options -->
-    <div class="icon action"
-         [popover]="songOptions"
-         [outsideClick]="true"
-         [popoverContext]="{ song: song }"
-         [isOpen]="song.popover"
-         (onShown)="song.popover = true"
-         (onHidden)="song.popover = false"
-         placement="left">
-      <fa-icon [fixedWidth]="true" [icon]="faOptions"></fa-icon>
-    </div>
-  </div>
-</div>
-
 <!-- Song popover -->
 <ng-template #songOptions let-song="song">
   <div class="list-group list-group-flush" (click)="song.popover = false">

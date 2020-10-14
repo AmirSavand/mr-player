@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { style, animate, transition, trigger } from '@angular/animations';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
@@ -22,9 +23,11 @@ import { PartyService } from '@app/services/party.service';
 import { PlayerService } from '@app/services/player.service';
 import { PusherService } from '@app/services/pusher.service';
 import { SongService } from '@app/services/song.service';
+import { PlayerComponent } from '@app/shared/player/player.component';
 import { SongModalComponent } from '@app/shared/song-modal/song-modal.component';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp';
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
@@ -36,12 +39,23 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import Channel from 'pusher-js';
-import { PlayerComponent } from '@app/shared/player/player.component';
 
 @Component({
   selector: 'app-party',
   templateUrl: './party.component.html',
   styleUrls: ['./party.component.scss'],
+  animations: [
+    trigger('scaleInOut', [
+      transition('* => void', [
+        style({ opacity: '1', transform: 'scale(1)' }),
+        animate('.15s ease-in-out', style({ opacity: '0', transform: 'scale(0)' })),
+      ]),
+      transition('void => *', [
+        style({ opacity: '0', transform: 'scale(0)' }),
+        animate('.15s ease-in-out', style({ opacity: '1', transform: 'scale(1)' })),
+      ]),
+    ]),
+  ],
 })
 export class PartyComponent implements OnInit, OnDestroy {
 
@@ -55,11 +69,27 @@ export class PartyComponent implements OnInit, OnDestroy {
   readonly faSettings: IconDefinition = faCog;
   readonly faOptions: IconDefinition = faEllipsisV;
   readonly faCategory: IconDefinition = faFolder;
+  readonly faArrowUp: IconDefinition = faArrowUp;
 
   /**
    * YouTube player instance
    */
   @ViewChild('player') player: PlayerComponent;
+
+  /**
+   * Element that is responsible for scrolling the whole view.
+   */
+  @ViewChild('scroller') scroller: ElementRef;
+
+  /**
+   * Element that is around party cover.
+   */
+  @ViewChild('partyWrapper') partyWrapper: ElementRef;
+
+  /**
+   * Determines whether or not to show scroll top button.
+   */
+  showScrollTop: boolean;
 
   /**
    * Cache data
@@ -848,5 +878,21 @@ export class PartyComponent implements OnInit, OnDestroy {
       // User is connected, disconnect from any DJ
       this.api.djUser.delete(this.djUser.id).subscribe();
     }
+  }
+
+  /**
+   * On scroll auto show arrow button to scroll to top.
+   *
+   * @param event Scroll event.
+   */
+  onScroll(event: Event): void {
+    this.showScrollTop = (event.target as HTMLDivElement).scrollTop >= 200;
+  }
+
+  /**
+   * Scroll to top with smooth animation.
+   */
+  scrollToTop(): void {
+    this.partyWrapper.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
