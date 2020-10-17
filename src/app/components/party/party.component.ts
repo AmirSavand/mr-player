@@ -895,4 +895,13 @@ export class PartyComponent implements OnInit, OnDestroy {
   scrollToTop(): void {
     this.partyWrapper.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  /**
+   * Copy party key to clipboard.
+   *
+   * @param partyKey Party key.
+   */
+  copyPartyKey(partyKey: string): void {
+    navigator.clipboard.writeText(partyKey);
+  }
 }

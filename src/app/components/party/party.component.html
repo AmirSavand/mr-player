@@ -73,8 +73,7 @@
           </button>
 
           <!-- Party ID -->
-          <button class="btn btn-light btn-sm mr-2 mt-2" [popover]="party.id"
-                  containerClass="px-3 mw-100 font-weight-bold text-monospace" triggers="click">
+          <button (click)="copyPartyKey(party.id)" class="btn btn-light btn-sm mr-2 mt-2">
             <fa-icon [fixedWidth]="true" [icon]="faKey"></fa-icon>
             Key
           </button>
