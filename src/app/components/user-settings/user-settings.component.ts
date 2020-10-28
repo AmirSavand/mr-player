@@ -6,6 +6,7 @@ import { ApiError } from '@app/interfaces/api-error';
 import { User } from '@app/interfaces/user';
 import { ApiService } from '@app/services/api.service';
 import { AuthService } from '@app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-settings',
@@ -45,6 +46,7 @@ export class UserSettingsComponent implements OnInit {
   loading: boolean;
 
   constructor(private formBuilder: FormBuilder,
+              private toast: ToastrService,
               private api: ApiService,
               private auth: AuthService) {
   }
@@ -88,6 +90,7 @@ export class UserSettingsComponent implements OnInit {
       this.loading = false;
       // Update the user account
       this.user.account = account;
+      this.toast.info('Your account has been updated successfully');
       // Update the auth data too
       this.auth.setUser(this.user);
     });
@@ -105,6 +108,7 @@ export class UserSettingsComponent implements OnInit {
     this.auth.changePassword(this.changePasswordForm.value).subscribe((data: { detail: string }): void => {
       this.loading = false;
       this.successPasswordMessage = data.detail;
+      this.toast.info('Your password has been changed successfully');
       this.changePasswordError = {};
       this.changePasswordForm.reset();
     }, (error: HttpErrorResponse): void => {

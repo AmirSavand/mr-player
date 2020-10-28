@@ -18,6 +18,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faUserMinus } from '@fortawesome/free-solid-svg-icons/faUserMinus';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FilterByPipe } from 'ngx-pipes';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-party-settings',
@@ -101,7 +102,8 @@ export class PartySettingsComponent implements OnInit {
               private router: Router,
               private filterBy: FilterByPipe,
               private modalService: BsModalService,
-              private title: Title) {
+              private title: Title,
+              private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -173,7 +175,7 @@ export class PartySettingsComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.partyService.update(this.party, this.form.value).subscribe(data => {
+    this.partyService.update(this.party, this.form.value).subscribe((data: Party) => {
       this.loading = false;
       this.party.status = data.status;
       this.party.name = data.name;
@@ -190,6 +192,7 @@ export class PartySettingsComponent implements OnInit {
         cover: this.party.cover,
         description: this.party.description,
       });
+      this.toast.info(`${data.name} party has been updated successfully`);
     }, error => {
       this.loading = false;
       this.partyErrors = error.error;
@@ -208,6 +211,7 @@ export class PartySettingsComponent implements OnInit {
     }
     this.loading = true;
     this.partyService.delete(this.party.id).subscribe(() => {
+      this.toast.success(`${this.party.name} party has been deleted successfully`);
       this.router.navigate([PartySettingsComponent.partyDeleteRedirect]);
     });
   }
@@ -227,6 +231,7 @@ export class PartySettingsComponent implements OnInit {
       this.loading = false;
       this.party.categories.push(data);
       this.categoryForm.reset();
+      this.toast.success(`${data.name} playlist has been created successfully`);
     }, error => {
       this.loading = false;
       this.categoryErrors = error.error;
@@ -244,6 +249,7 @@ export class PartySettingsComponent implements OnInit {
         category = data;
       });
     }
+    this.toast.info(`Playlists has been updated successfully`);
   }
 
   /**
@@ -259,6 +265,7 @@ export class PartySettingsComponent implements OnInit {
     this.api.partyCategory.delete(category.id).subscribe((): void => {
       this.loading = false;
       this.party.categories.splice(this.party.categories.indexOf(category), 1);
+      this.toast.success(`${category.name} playlist has been deleted successfully`);
     });
   }
 
@@ -284,6 +291,7 @@ export class PartySettingsComponent implements OnInit {
     this.api.partyUser.delete(partyUser.id).subscribe((): void => {
       this.loading = false;
       this.partyUsers.splice(this.partyUsers.indexOf(partyUser), 1);
+      this.toast.success(`${partyUser.user.username} has been kicked from ${this.party.name} successfully`);
     });
   }
 

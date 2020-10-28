@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +15,8 @@ export class SignUpComponent implements OnInit {
   errors: any = {};
 
   constructor(private formBuilder: FormBuilder,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class SignUpComponent implements OnInit {
       this.f.username.value,
       this.f.password.value,
     ).subscribe((): void => {
+      this.toast.success('Welcome to PlaysEM');
       }, (data: any): void => {
         this.loading = false;
         this.errors = data.error;

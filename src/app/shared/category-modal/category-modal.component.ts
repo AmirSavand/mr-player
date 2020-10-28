@@ -6,6 +6,7 @@ import { SongCategory } from '@app/interfaces/song-category';
 import { ApiService } from '@app/services/api.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import { FilterByPipe } from 'ngx-pipes';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-category',
@@ -31,7 +32,8 @@ export class CategoryModalComponent implements OnInit {
 
   constructor(public modal: BsModalRef,
               private api: ApiService,
-              private filterBy: FilterByPipe) {
+              private filterBy: FilterByPipe,
+              private toast: ToastrService) {
   }
 
   /**
@@ -89,6 +91,7 @@ export class CategoryModalComponent implements OnInit {
         this.api.songCategory.delete(songCategory.id).subscribe();
       }
     }
+    this.toast.info(`${this.category.name} playlist has been updated successfully`);
     this.modal.hide();
   }
 }

@@ -5,6 +5,7 @@ import { SongCategory } from '@app/interfaces/song-category';
 import { ApiService } from '@app/services/api.service';
 import { BsModalRef } from 'ngx-bootstrap';
 import { FilterByPipe } from 'ngx-pipes';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-song-modal',
@@ -30,6 +31,7 @@ export class SongModalComponent implements OnInit {
 
   constructor(public modal: BsModalRef,
               private filterBy: FilterByPipe,
+              private toast: ToastrService,
               private api: ApiService) {
   }
 
@@ -75,6 +77,7 @@ export class SongModalComponent implements OnInit {
         });
       }
     }
+    this.toast.info(`${this.song.name} has been updated successfully`);
     this.modal.hide();
   }
 }

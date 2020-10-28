@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiError } from '@app/interfaces/api-error';
+import { AuthResponse } from '@app/interfaces/auth-response';
 import { AuthService } from '@app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sign-in',
@@ -27,7 +29,8 @@ export class SignInComponent implements OnInit {
   errors: ApiError = {};
 
   constructor(private formBuilder: FormBuilder,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -47,8 +50,8 @@ export class SignInComponent implements OnInit {
   submit(): void {
     this.loading = true;
     this.errors = {};
-
-    this.authService.signIn(this.f.username.value, this.f.password.value).subscribe(() => {
+    this.authService.signIn(this.f.username.value, this.f.password.value).subscribe((data: AuthResponse) => {
+      this.toast.info(`Welcome back ${data.user.account.name}`);
     }, error => {
       this.loading = false;
       this.errors = error.error as ApiError;

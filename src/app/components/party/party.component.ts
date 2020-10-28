@@ -38,6 +38,7 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons/faUserPlus';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import Channel from 'pusher-js';
 
 @Component({
@@ -178,6 +179,7 @@ export class PartyComponent implements OnInit, OnDestroy {
               private router: Router,
               private formBuilder: FormBuilder,
               private modalService: BsModalService,
+              private toast: ToastrService,
               private title: Title,
               private likeService: LikeService) {
   }
@@ -713,6 +715,7 @@ export class PartyComponent implements OnInit, OnDestroy {
   joinParty(): void {
     this.api.partyUser.create({ party: this.party.id }).subscribe((): void => {
       this.loadUsers();
+      this.toast.info(`You're now member of ${this.party.name}`);
       PartyService.add(this.party);
     });
   }
@@ -724,6 +727,7 @@ export class PartyComponent implements OnInit, OnDestroy {
     const partyUser: PartyUser = this.partyUsers.find(item => item.user.id === this.user.id);
     this.api.partyUser.delete(partyUser.id).subscribe((): void => {
       this.loadUsers();
+      this.toast.info(`You're not ${this.party.name} member anymore`);
       PartyService.remove(this.party.id);
     });
   }
@@ -744,6 +748,7 @@ export class PartyComponent implements OnInit, OnDestroy {
     this.api.song.delete(song.id).subscribe((): void => {
       // Remove song from the list
       this.songs.splice(this.songs.indexOf(song), 1);
+      this.toast.success(`${song.name} has been deleted successfully`);
     });
   }
 
@@ -765,6 +770,7 @@ export class PartyComponent implements OnInit, OnDestroy {
       data.categories = [];
       this.songs.push(data);
       this.songForm.reset();
+      this.toast.success(`${data.name} has been added to ${data.party.name} successfully`);
       /**
        * Add the song to selected category (if selected)
        */
@@ -775,6 +781,7 @@ export class PartyComponent implements OnInit, OnDestroy {
         }).subscribe((songCategory: SongCategory): void => {
           songCategory.category = this.categorySelected;
           this.songs.find(item => item.id === data.id).categories.push(songCategory);
+          this.toast.success(`${data.name} has been added to ${songCategory.category.name} successfully`);
         });
       }
     });
@@ -846,13 +853,17 @@ export class PartyComponent implements OnInit, OnDestroy {
      * Create a DJ for this party if user is DJ otherwise stop being a DJ
      */
     if (!this.isPartyDj()) {
-      this.api.dj.create({ party: this.party.id }).subscribe();
+      this.api.dj.create({ party: this.party.id }).subscribe((): void => {
+        this.toast.info(`Your DJ has started`);
+      });
       // Disconnect from any DJ
       if (this.djUser) {
         this.toggleConnectDj(this.getDj(this.djUser.dj));
       }
     } else {
-      this.api.dj.delete(this.djs.find(dj => dj.user === this.user.id).id).subscribe();
+      this.api.dj.delete(this.djs.find(dj => dj.user === this.user.id).id).subscribe((): void => {
+        this.toast.info(`Your DJ has stopped`);
+      });
     }
   }
 
@@ -866,17 +877,22 @@ export class PartyComponent implements OnInit, OnDestroy {
       alert('You can not connect to yourself!');
       return;
     }
+    const userDj = this.getPartyUser(this.getDj(this.djUser.dj).user).user.username;
     // Check if user is connected to any JD or not
     if (!this.djUser) {
       // User is not connected, connect to this DJ
-      this.api.djUser.create({ dj: dj.id }).subscribe();
+      this.api.djUser.create({ dj: dj.id }).subscribe((): void => {
+        this.toast.info(`Enjoy ${userDj}'s musics`);
+      });
       // Stop being a DJ if user is a DJ
       if (this.isPartyDj()) {
         this.toggleDj();
       }
     } else {
       // User is connected, disconnect from any DJ
-      this.api.djUser.delete(this.djUser.id).subscribe();
+      this.api.djUser.delete(this.djUser.id).subscribe((): void => {
+        this.toast.info(`You've been disconnected from ${userDj}`);
+      });
     }
   }
 

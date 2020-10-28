@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiError } from '@app/interfaces/api-error';
 import { AuthService } from '@app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-reset-password',
@@ -44,7 +45,8 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -69,13 +71,15 @@ export class ResetPasswordComponent implements OnInit {
    */
   tokenSubmit(): void {
     this.loading = true;
+    const tokenEmail = this.tokenForm.get('email').value;
     /**
      * API call
      */
-    this.authService.resetPassword(this.tokenForm.get('email').value).subscribe((data: { detail: string }) => {
+    this.authService.resetPassword(tokenEmail).subscribe((data: { detail: string }) => {
       this.loading = false;
       this.success = data.detail;
       this.tokenError = {};
+      this.toast.info(`Password reset email has been sent to ${tokenEmail}`);
     },  (error: HttpErrorResponse): void => {
       this.loading = false;
       this.success = '';
@@ -108,6 +112,7 @@ export class ResetPasswordComponent implements OnInit {
     }).subscribe((data: { detail: string }): void => {
       this.resetPasswordError = {};
       this.resetPasswordForm.reset();
+      this.toast.success(`Password has been changed successfully`);
       /**
        * Navigate to sign in page
        */

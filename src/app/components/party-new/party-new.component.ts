@@ -9,6 +9,7 @@ import { PartyService } from '@app/services/party.service';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-party-new',
@@ -49,7 +50,8 @@ export class PartyNewComponent implements OnInit {
   constructor(protected googleAnalytics: GoogleAnalyticsService,
               private formBuilder: FormBuilder,
               private api: ApiService,
-              private router: Router) {
+              private router: Router,
+              private toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -75,6 +77,7 @@ export class PartyNewComponent implements OnInit {
     this.loading = true;
     this.api.party.create(this.partyForm.value).subscribe((data: Party): void => {
       PartyService.add(data);
+      this.toast.success(`${data.name} has been created successfully`);
       this.router.navigate([PartyNewComponent.partyCreationRedirect, data.id]);
       this.googleAnalytics.event('create_party', 'party', 'Party');
     }, error => {

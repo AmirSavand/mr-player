@@ -21,6 +21,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CookieService } from 'ngx-cookie-service';
 import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { FilterByPipe } from 'ngx-pipes';
+import { ToastrModule } from 'ngx-toastr';
 import { NgxY2PlayerModule } from 'ngx-y2-player';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -44,11 +45,15 @@ import { AppComponent } from './app.component';
     NgxY2PlayerModule,
     LoadingBarModule,
     LoadingBarHttpClientModule,
+    BrowserAnimationsModule,
     PopoverModule.forRoot(),
     ProgressbarModule.forRoot(),
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
     TooltipModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+    }),
     BrowserAnimationsModule,
     NgxGoogleAnalyticsModule.forRoot(environment.googleAnalytics),
     NgxGoogleAnalyticsRouterModule,

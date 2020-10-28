@@ -1,6 +1,10 @@
 $primary: #ff1493;
 $dark: #222228;
 
+/* Toastr */
+
+@import "~ngx-toastr/toastr";
+
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
@@ -23,6 +27,34 @@ $card-border-width: 0;
 .card {
   .card-header {
     background: rgba(0, 0, 0, 0.25);
+  }
+}
+
+.ngx-toastr {
+  background-color: $dark;
+  box-shadow: none !important;
+  border-left: 4px solid;
+  border-radius: $border-radius-sm !important;
+  font-size: $font-size-sm;
+
+  &:hover {
+    background-color: lighten($dark, 10);
+  }
+
+  &.toast-info {
+    border-color: $primary;
+  }
+
+  &.toast-error {
+    border-color: $danger;
+  }
+
+  &.toast-success {
+    border-color: $success;
+  }
+
+  .toast-message {
+    opacity: 0.75;
   }
 }
 
